@@ -18,6 +18,7 @@ namespace CR2ToJPG
             m_length = p_length;
 
             m_f.Seek(p_start, SeekOrigin.Begin);
+            GC.Collect();
         }
 
         public override bool CanRead
