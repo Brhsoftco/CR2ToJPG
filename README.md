@@ -7,3 +7,5 @@ Why fork the project? I needed some extra features for my own workflow, and you 
 
 A warning!
 This code is very dirty, and could be VASTLY optimised.
+
+The image displayed in the watermark preview ("flower_preview.jpg") is property of Baeleigh Harris Images (Copyright (c) 2019)
