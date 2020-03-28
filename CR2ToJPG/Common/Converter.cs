@@ -1,20 +1,118 @@
-﻿using System;
+﻿using CR2ToJPG.Properties;
+using ImageMagick;
+using renderer;
+using structure;
+using structure.Enums;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using structure;
+using System.Threading;
+using System.Windows.Forms;
 
-namespace CR2ToJPG
+namespace CR2ToJPG.Common
 {
     public static class Converter
     {
-        private static byte[] _buffer = new byte[_bufferSize];
         private static int _bufferSize = 512 * 1024;
-        private static ImageCodecInfo _jpgImageCodec = GetJpegCodec();
-        private static renderer.ImageRenderer ImageRenderer = new renderer.ImageRenderer();
-        public static WatermarkContext wmContext = frmMain.wmContext;
+        private static byte[] _buffer = new byte[_bufferSize];
+        private static readonly ImageCodecInfo JpgImageCodec = GetJpegCodec();
+        private static readonly ImageRenderer ImageRenderer = new ImageRenderer();
+        public static WatermarkContext WmContext = FrmMain.WmContext;
+
+        // thing xD
+        internal static string GetSimpleExtension(string fileName)
+        {
+            return Path.GetExtension(fileName)?.Replace(".", "");
+        }
 
         public static void ConvertImage(string fileName, string outputFolder, AppOptions options)
+        {
+            if (options.ImageProcessor == ImageProcType.Native)
+                ConvertImageNative(fileName, outputFolder, options);
+            else if (options.ImageProcessor == ImageProcType.MagickNet)
+                ConvertImageMagickNet(fileName, outputFolder, options);
+        }
+
+        public static void ConvertImageMagickNet(string fileName, string outputFolder, AppOptions options)
+        {
+            try
+            {
+                using (FileStream fi = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read, _bufferSize, FileOptions.None))
+                {
+                    string baseName = Path.GetFileNameWithoutExtension(fileName);
+                    string jpgName = Path.Combine(outputFolder, baseName + ".jpg");
+                    string wmkName = Path.Combine(outputFolder, baseName + "_watermarked.jpg");
+                    string extName = GetSimpleExtension(fileName).ToLower();
+
+                    Bitmap bitmap = Resources.flower_preview;
+
+                    if (extName == "cr2")
+                    {
+                        MagickImage img = new MagickImage(fi);
+                        bitmap = img.ToBitmap();
+                    }
+                    else if (options.ProcessJpeg)
+                    {
+                        //MessageBox.Show("Yee");
+                        if (extName == "jpg")
+                        {
+                            //MessageBox.Show(extName);
+                            bitmap = (Bitmap)Image.FromFile(fileName);
+                        }
+                    }
+
+                    EncoderParameters ep = new EncoderParameters(1);
+                    ep.Param[0] = new EncoderParameter(Encoder.Quality, options.Quality);
+
+                    ImageRenderer.WmContext = WmContext;
+
+                    if (WmContext.BetaWatermarkType == WatermarkType.Image)
+                    {
+
+                        Bitmap watermark = (Bitmap)Image.FromFile(WmContext.BetaWatermarkInfo.WatermarkPath);
+                        Bitmap image = ImageRenderer.RenderImageWatermark(watermark, bitmap);
+                        image.Save(wmkName, JpgImageCodec, ep);
+
+                        if (options.Duplicates)
+                        {
+                            bitmap.Save(jpgName, JpgImageCodec, ep);
+                        }
+                    }
+                    else if (WmContext.BetaWatermarkType == WatermarkType.Text)
+                    {
+                        string watermark = WmContext.BetaWatermarkInfo.WatermarkText;
+                        Bitmap image = ImageRenderer.RenderTextWatermark(watermark, bitmap);
+                        image.Save(wmkName, JpgImageCodec, ep);
+
+                        if (options.Duplicates)
+                        {
+                            bitmap.Save(jpgName, JpgImageCodec, ep);
+                        }
+                    }
+                    else if (WmContext.BetaWatermarkType == WatermarkType.None)
+                    {
+                        bitmap.Save(jpgName, JpgImageCodec, ep);
+                    }
+
+                    GC.Collect();
+                }
+            }
+            catch (ThreadAbortException ex)
+            {
+                //do absolutely nil
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error whilst converting", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (FrmMain.BwConverter.IsBusy)
+                {
+                    FrmMain.BwConverter.Abort();
+                }
+            }
+        }
+
+        public static void ConvertImageNative(string fileName, string outputFolder, AppOptions options)
         {
             try
             {
@@ -37,12 +135,27 @@ namespace CR2ToJPG
                     string baseName = Path.GetFileNameWithoutExtension(fileName);
                     string jpgName = Path.Combine(outputFolder, baseName + ".jpg");
                     string wmkName = Path.Combine(outputFolder, baseName + "_watermarked.jpg");
+                    string extName = GetSimpleExtension(fileName).ToLower();
 
-                    Bitmap bitmap = new Bitmap(new PartialStream(fi, jpgStartPosition, fileSize));
+                    Bitmap bitmap = Resources.flower_preview;
+
+                    if (extName == "cr2")
+                    {
+                        bitmap = new Bitmap(new PartialStream(fi, jpgStartPosition, fileSize));
+                    }
+                    else if (options.ProcessJpeg)
+                    {
+                        //MessageBox.Show("Yee");
+                        if (extName == "jpg")
+                        {
+                            //MessageBox.Show(extName);
+                            bitmap = (Bitmap)Image.FromFile(fileName);
+                        }
+                    }
 
                     try
                     {
-                        if (_jpgImageCodec != null && (orientation == 8 || orientation == 6))
+                        if (JpgImageCodec != null && (orientation == 8 || orientation == 6))
                         {
                             if (orientation == 8)
                                 bitmap.RotateFlip(RotateFlipType.Rotate270FlipNone);
@@ -57,51 +170,50 @@ namespace CR2ToJPG
                     EncoderParameters ep = new EncoderParameters(1);
                     ep.Param[0] = new EncoderParameter(Encoder.Quality, options.Quality);
 
-                    ImageRenderer.wmContext = wmContext;
+                    ImageRenderer.WmContext = WmContext;
 
-                    if (wmContext.BetaWatermarkType == WatermarkType.Image)
+                    if (WmContext.BetaWatermarkType == WatermarkType.Image)
                     {
-                        
-                        Bitmap watermark = (Bitmap)Bitmap.FromFile(wmContext.BetaWatermarkInfo.WatermarkPath);
-                        Bitmap image = ImageRenderer.renderImageWatermark(watermark, bitmap);
-                        image.Save(wmkName, _jpgImageCodec, ep);
 
-                        if (options.Duplicates)
-                        {
-                            bitmap.Save(jpgName, _jpgImageCodec, ep);
-                        }
-                    }
-                    else if (wmContext.BetaWatermarkType == WatermarkType.Text)
-                    {
-                        string watermark = wmContext.BetaWatermarkInfo.WatermarkText;
-                        Bitmap image = ImageRenderer.renderTextWatermark(watermark, bitmap);
-                        image.Save(wmkName, _jpgImageCodec, ep);
+                        Bitmap watermark = (Bitmap)Image.FromFile(WmContext.BetaWatermarkInfo.WatermarkPath);
+                        Bitmap image = ImageRenderer.RenderImageWatermark(watermark, bitmap);
+                        image.Save(wmkName, JpgImageCodec, ep);
 
                         if (options.Duplicates)
                         {
-                            bitmap.Save(jpgName, _jpgImageCodec, ep);
+                            bitmap.Save(jpgName, JpgImageCodec, ep);
                         }
                     }
-                    else if (wmContext.BetaWatermarkType == WatermarkType.None)
+                    else if (WmContext.BetaWatermarkType == WatermarkType.Text)
                     {
-                        bitmap.Save(jpgName, _jpgImageCodec, ep);
+                        string watermark = WmContext.BetaWatermarkInfo.WatermarkText;
+                        Bitmap image = ImageRenderer.RenderTextWatermark(watermark, bitmap);
+                        image.Save(wmkName, JpgImageCodec, ep);
+
+                        if (options.Duplicates)
+                        {
+                            bitmap.Save(jpgName, JpgImageCodec, ep);
+                        }
+                    }
+                    else if (WmContext.BetaWatermarkType == WatermarkType.None)
+                    {
+                        bitmap.Save(jpgName, JpgImageCodec, ep);
                     }
 
                     GC.Collect();
                 }
             }
-            catch (System.Threading.ThreadAbortException ex)
+            catch (ThreadAbortException ex)
             {
                 //do absolutely nil
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.ToString(), "Error whilst converting", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-                if (frmMain.bwConverter.IsBusy)
+                MessageBox.Show(ex.ToString(), "Error whilst converting", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (FrmMain.BwConverter.IsBusy)
                 {
-                    frmMain.bwConverter.Abort();
+                    FrmMain.BwConverter.Abort();
                 }
-                return;
             }
         }
 

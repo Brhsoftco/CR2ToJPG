@@ -8,14 +8,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.CodeDom.Compiler;
+using System.Configuration;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
 namespace CR2ToJPG {
     
     
-    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
-    public sealed partial class MainSettings : global::System.Configuration.ApplicationSettingsBase {
+    [CompilerGenerated()]
+    [GeneratedCode("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
+    public sealed partial class MainSettings : ApplicationSettingsBase {
         
-        private static MainSettings defaultInstance = ((MainSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new MainSettings())));
+        private static MainSettings defaultInstance = ((MainSettings)(Synchronized(new MainSettings())));
         
         public static MainSettings Default {
             get {
@@ -23,9 +28,9 @@ namespace CR2ToJPG {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [UserScopedSetting()]
+        [DebuggerNonUserCode()]
+        [DefaultSettingValue("True")]
         public bool allowDuplicates {
             get {
                 return ((bool)(this["allowDuplicates"]));
@@ -35,9 +40,9 @@ namespace CR2ToJPG {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [UserScopedSetting()]
+        [DebuggerNonUserCode()]
+        [DefaultSettingValue("False")]
         public bool allowSubfolders {
             get {
                 return ((bool)(this["allowSubfolders"]));
@@ -47,9 +52,9 @@ namespace CR2ToJPG {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        [UserScopedSetting()]
+        [DebuggerNonUserCode()]
+        [DefaultSettingValue("100")]
         public double qualityLevel {
             get {
                 return ((double)(this["qualityLevel"]));

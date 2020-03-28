@@ -1,5 +1,6 @@
 ﻿using structure;
-namespace CR2ToJPG
+
+namespace CR2ToJPG.Common
 {
     public class ConverterOptions
     {

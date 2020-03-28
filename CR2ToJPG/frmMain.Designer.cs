@@ -1,11 +1,14 @@
-﻿namespace CR2ToJPG
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace CR2ToJPG
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -29,7 +32,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.picMain = new System.Windows.Forms.PictureBox();
             this.txtInputDirectory = new System.Windows.Forms.TextBox();
             this.btnSelectInputDirectory = new System.Windows.Forms.Button();
@@ -97,9 +100,9 @@
             this.lblCR2Folder.AutoSize = true;
             this.lblCR2Folder.Location = new System.Drawing.Point(163, 29);
             this.lblCR2Folder.Name = "lblCR2Folder";
-            this.lblCR2Folder.Size = new System.Drawing.Size(79, 13);
+            this.lblCR2Folder.Size = new System.Drawing.Size(63, 13);
             this.lblCR2Folder.TabIndex = 1;
-            this.lblCR2Folder.Text = "CR2 File Folder";
+            this.lblCR2Folder.Text = "Input Folder";
             // 
             // txtOutputDirectory
             // 
@@ -126,9 +129,9 @@
             this.lblJPEGFolder.AutoSize = true;
             this.lblJPEGFolder.Location = new System.Drawing.Point(163, 75);
             this.lblJPEGFolder.Name = "lblJPEGFolder";
-            this.lblJPEGFolder.Size = new System.Drawing.Size(101, 13);
+            this.lblJPEGFolder.Size = new System.Drawing.Size(71, 13);
             this.lblJPEGFolder.TabIndex = 4;
-            this.lblJPEGFolder.Text = "JPEG Output Folder";
+            this.lblJPEGFolder.Text = "Output Folder";
             this.lblJPEGFolder.Click += new System.EventHandler(this.lblJPEGFolder_Click);
             // 
             // btnProcess
@@ -176,7 +179,7 @@
             this.itmProfileLoad.Name = "itmProfileLoad";
             this.itmProfileLoad.ShortcutKeyDisplayString = "Ctrl+O";
             this.itmProfileLoad.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.itmProfileLoad.Size = new System.Drawing.Size(180, 22);
+            this.itmProfileLoad.Size = new System.Drawing.Size(143, 22);
             this.itmProfileLoad.Text = "Load";
             this.itmProfileLoad.Click += new System.EventHandler(this.itmProfileLoad_Click);
             // 
@@ -185,7 +188,7 @@
             this.itmProfileSave.Name = "itmProfileSave";
             this.itmProfileSave.ShortcutKeyDisplayString = "Ctrl+S";
             this.itmProfileSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.itmProfileSave.Size = new System.Drawing.Size(180, 22);
+            this.itmProfileSave.Size = new System.Drawing.Size(143, 22);
             this.itmProfileSave.Text = "Save";
             this.itmProfileSave.Click += new System.EventHandler(this.itmProfileSave_Click);
             // 
@@ -250,10 +253,10 @@
             // 
             // itmAboutWebsite
             // 
-            this.itmAboutWebsite.Enabled = false;
             this.itmAboutWebsite.Name = "itmAboutWebsite";
             this.itmAboutWebsite.Size = new System.Drawing.Size(213, 22);
             this.itmAboutWebsite.Text = "https://brharris.me/";
+            this.itmAboutWebsite.Click += new System.EventHandler(this.itmAboutWebsite_Click);
             // 
             // statusMain
             // 
@@ -318,7 +321,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuMain;
             this.MaximizeBox = false;
-            this.Name = "frmMain";
+            this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CR2 To JPG";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
@@ -335,32 +338,32 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox picMain;
-        private System.Windows.Forms.Button btnSelectInputDirectory;
-        private System.Windows.Forms.Label lblCR2Folder;
-        private System.Windows.Forms.TextBox txtOutputDirectory;
-        private System.Windows.Forms.Button btnSelectOutputDirectory;
-        private System.Windows.Forms.Label lblJPEGFolder;
-        private System.Windows.Forms.Button btnProcess;
-        private System.Windows.Forms.ProgressBar pbProgress;
-        private System.Windows.Forms.TextBox txtInputDirectory;
-        private System.Windows.Forms.MenuStrip menuMain;
-        private System.Windows.Forms.ToolStripMenuItem itmProfile;
-        private System.Windows.Forms.ToolStripMenuItem itmHelp;
-        private System.Windows.Forms.ToolStripMenuItem itmProfileSave;
-        private System.Windows.Forms.ToolStripMenuItem itmProfileLoad;
-        private System.Windows.Forms.ToolStripMenuItem itmOptions;
-        private System.Windows.Forms.ToolStripMenuItem itmAboutViewInfo;
-        private System.Windows.Forms.ToolStripMenuItem itmAboutWebsite;
-        private System.Windows.Forms.ToolStripMenuItem itmCheckUpdates;
-        private System.Windows.Forms.ToolStripMenuItem itmPicture;
-        private System.Windows.Forms.ToolStripMenuItem itmWatermarking;
-        private System.Windows.Forms.ToolStripMenuItem itmQuickGuide;
-        private System.Windows.Forms.StatusStrip statusMain;
-        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
-        private System.Windows.Forms.ToolStripStatusLabel lblStatusValue;
-        private System.Windows.Forms.Label lblVersion;
-        private System.Windows.Forms.NotifyIcon nfyMain;
+        private PictureBox picMain;
+        private Button btnSelectInputDirectory;
+        private Label lblCR2Folder;
+        private TextBox txtOutputDirectory;
+        private Button btnSelectOutputDirectory;
+        private Label lblJPEGFolder;
+        private Button btnProcess;
+        private ProgressBar pbProgress;
+        private TextBox txtInputDirectory;
+        private MenuStrip menuMain;
+        private ToolStripMenuItem itmProfile;
+        private ToolStripMenuItem itmHelp;
+        private ToolStripMenuItem itmProfileSave;
+        private ToolStripMenuItem itmProfileLoad;
+        private ToolStripMenuItem itmOptions;
+        private ToolStripMenuItem itmAboutViewInfo;
+        private ToolStripMenuItem itmAboutWebsite;
+        private ToolStripMenuItem itmCheckUpdates;
+        private ToolStripMenuItem itmPicture;
+        private ToolStripMenuItem itmWatermarking;
+        private ToolStripMenuItem itmQuickGuide;
+        private StatusStrip statusMain;
+        private ToolStripStatusLabel lblStatus;
+        private ToolStripStatusLabel lblStatusValue;
+        private Label lblVersion;
+        private NotifyIcon nfyMain;
     }
 }
 

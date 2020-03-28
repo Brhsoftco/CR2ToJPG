@@ -1,46 +1,42 @@
-﻿using System;
+﻿using AutoUpdaterDotNET;
+using CR2ToJPG.Common;
+using renderer;
+using structure;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
-using Microsoft.VisualBasic;
-using AutoUpdaterDotNET;
-using structure;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace CR2ToJPG
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
         private bool _isWorking;
 
-        public static AppOptions settings = new AppOptions();
+        public static AppOptions Settings = new AppOptions();
 
-        public static WatermarkContext wmContext = new WatermarkContext();
+        public static WatermarkContext WmContext = new WatermarkContext();
 
-        public static AbortableBackgroundWorker bwConverter = new CR2ToJPG.AbortableBackgroundWorker();
+        public static AbortableBackgroundWorker BwConverter = new AbortableBackgroundWorker();
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
             //
             // bwConverter
             //
-            bwConverter.WorkerReportsProgress = true;
-            bwConverter.WorkerSupportsCancellation = true;
-            bwConverter.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwConverter_DoWork);
-            bwConverter.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwConverter_ProgressChanged);
-            bwConverter.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwConverter_RunWorkerCompleted);
+            BwConverter.WorkerReportsProgress = true;
+            BwConverter.WorkerSupportsCancellation = true;
+            BwConverter.DoWork += bwConverter_DoWork;
+            BwConverter.ProgressChanged += bwConverter_ProgressChanged;
+            BwConverter.RunWorkerCompleted += bwConverter_RunWorkerCompleted;
         }
 
         private void btnProcess_Click(object sender, EventArgs e)
@@ -51,7 +47,7 @@ namespace CR2ToJPG
                 {
                     if (string.IsNullOrEmpty(txtInputDirectory.Text) || string.IsNullOrEmpty(txtOutputDirectory.Text))
                     {
-                        MessageBox.Show("Input and Output Directories Are Required.", "CR2 To JPG", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show(@"Input and Output Directories Are Required.", @"CR2 To JPG", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         return;
                     }
 
@@ -59,33 +55,41 @@ namespace CR2ToJPG
 
                     pbProgress.Value = 0;
 
-                    string[] arrFiles = { };
+                    string[] arrFiles;
 
-                    if (settings.Subfolders)
+                    if (Settings.Subfolders)
                     {
                         arrFiles = Directory.GetFiles(txtInputDirectory.Text, "*.CR2", SearchOption.AllDirectories);
+                        if (Settings.ProcessJpeg)
+                            arrFiles = arrFiles.Concat(Directory.GetFiles(txtInputDirectory.Text, "*.JPG")).ToArray();
+
                     }
                     else
                     {
                         arrFiles = Directory.GetFiles(txtInputDirectory.Text, "*.CR2");
+                        if (Settings.ProcessJpeg)
+                            arrFiles = arrFiles.Concat(Directory.GetFiles(txtInputDirectory.Text, "*.JPG")).ToArray();
+
                     }
 
                     var converterOptions = new ConverterOptions
                     {
                         Files = arrFiles,
                         OutputDirectory = txtOutputDirectory.Text,
-                        Watermark = wmContext
+                        Watermark = WmContext
                     };
+
+                    //MessageBox.Show(converterOptions.Files.Length.ToString());
 
                     pbProgress.Maximum = converterOptions.Files.Length;
 
-                    bwConverter.RunWorkerAsync(converterOptions);
+                    BwConverter.RunWorkerAsync(converterOptions);
 
-                    lblStatusValue.Text = "Converting...0%";
+                    lblStatusValue.Text = @"Converting...0% (0/" + pbProgress.Maximum + @") - " + Settings.ImageProcessor;
                 }
                 else
                 {
-                    bwConverter.Abort();
+                    BwConverter.Abort();
                     _isWorking = false;
                     pbProgress.Value = pbProgress.Maximum;
                     SetFormWorking(false);
@@ -93,19 +97,18 @@ namespace CR2ToJPG
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.ToString(), "Error whilst converting", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-                if (bwConverter.IsBusy)
+                MessageBox.Show(ex.ToString(), @"Error whilst converting", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (BwConverter.IsBusy)
                 {
-                    bwConverter.Abort();
+                    BwConverter.Abort();
                 }
-                return;
             }
         }
 
         private void btnSelectInputDirectory_Click(object sender, EventArgs e)
         {
             var fbd = new FolderBrowserDialog();
-            fbd.Description = "Where are your CR2 files located?";
+            fbd.Description = @"Where are your CR2 files located?";
 
             if (fbd.ShowDialog() == DialogResult.OK)
                 txtInputDirectory.Text = fbd.SelectedPath;
@@ -114,30 +117,25 @@ namespace CR2ToJPG
         private void btnSelectOutputDirectory_Click(object sender, EventArgs e)
         {
             var fbd = new FolderBrowserDialog();
-            fbd.Description = "Where do you want me to put your converted JPEGs?";
+            fbd.Description = @"Where do you want me to put your converted JPEGs?";
 
             if (fbd.ShowDialog() == DialogResult.OK)
                 txtOutputDirectory.Text = fbd.SelectedPath;
         }
 
-        private void bwConverter_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void bwConverter_DoWork(object sender, DoWorkEventArgs e)
         {
             var converterOptions = e.Argument as ConverterOptions;
             var parallelOptions = GetParallelOptions();
 
             Parallel.ForEach(converterOptions.Files, parallelOptions, currentFile =>
             {
-                Converter.ConvertImage(currentFile, converterOptions.OutputDirectory, settings);
-                bwConverter.ReportProgress(0);
+                Converter.ConvertImage(currentFile, converterOptions.OutputDirectory, Settings);
+                BwConverter.ReportProgress(0);
             });
         }
 
-        public static void externalSetFormWorking(bool working)
-        {
-            externalSetFormWorking(working);
-        }
-
-        private void bwConverter_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        private void bwConverter_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             pbProgress.Value += 1;
 
@@ -145,10 +143,10 @@ namespace CR2ToJPG
             decimal maximum = pbProgress.Maximum;
             decimal percent = Math.Round((progress / maximum) * 100);
 
-            lblStatusValue.Text = "Converting..." + percent.ToString() + "%";
+            lblStatusValue.Text = @"Converting..." + percent + @"% (" + pbProgress.Value + @"/" + pbProgress.Maximum + @") - " + Settings.ImageProcessor;
         }
 
-        private void bwConverter_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void bwConverter_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             SetFormWorking(false);
 
@@ -172,7 +170,8 @@ namespace CR2ToJPG
 
         private ParallelOptions GetParallelOptions()
         {
-            return new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+            return new ParallelOptions
+            { MaxDegreeOfParallelism = 2 };
         }
 
         private void lnkWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -202,12 +201,12 @@ namespace CR2ToJPG
 
             _isWorking = isWorking;
             pbProgress.Visible = true;
-            this.UseWaitCursor = isWorking;
+            UseWaitCursor = isWorking;
         }
 
-        string GetBuildInfo(bool includeDateTime)
+        private string GetBuildInfo(bool includeDateTime)
         {
-            Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
             DateTime buildDate = new DateTime(2000, 1, 1)
                                     .AddDays(version.Build).AddSeconds(version.Revision * 2);
             string displayableVersion;
@@ -226,12 +225,12 @@ namespace CR2ToJPG
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-           
+
         }
 
         private void lnkOptions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            
+
         }
 
         private void pbProgress_Click(object sender, EventArgs e)
@@ -269,7 +268,7 @@ namespace CR2ToJPG
 
         private void optionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmOptions frm = new frmOptions();
+            FrmOptions frm = new FrmOptions();
             frm.ShowDialog();
         }
 
@@ -320,11 +319,11 @@ namespace CR2ToJPG
             return doc;
         }
 
-        public void saveProfile(bool silent)
+        public void SaveProfile(bool silent)
         {
             if (!Environment.GetCommandLineArgs().Contains("--disable-save"))
             {
-                if ((txtInputDirectory.Text != "") && (txtOutputDirectory.Text != ""))
+                if ((txtInputDirectory.Text != string.Empty) && (txtOutputDirectory.Text != string.Empty))
                 {
                     try
                     {
@@ -333,13 +332,13 @@ namespace CR2ToJPG
 
                         if (sfd.ShowDialog() == DialogResult.OK)
                         {
-                            var subReq = new XMLProfile();
-                            subReq.Locations = new AppLocations { CR2Folder = txtInputDirectory.Text, JPGFolder = txtOutputDirectory.Text};
-                            subReq.Options = settings;
-                            subReq.Watermark = wmContext;
+                            var subReq = new XmlProfile();
+                            subReq.Locations = new AppLocations { Cr2Folder = txtInputDirectory.Text, JpgFolder = txtOutputDirectory.Text };
+                            subReq.Options = Settings;
+                            subReq.Watermark = WmContext;
                             subReq.AppInfo.AppVersion = GetBuildInfo(false);
 
-                            XMLProfile.saveFile(subReq,sfd.FileName);
+                            XmlProfile.SaveFile(subReq, sfd.FileName);
 
                             if (!silent)
                             {
@@ -353,7 +352,6 @@ namespace CR2ToJPG
                         {
                             MessageBox.Show(ex.ToString(), "Error in saving XML Profile", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                        return;
                     }
                 }
                 else
@@ -390,21 +388,22 @@ namespace CR2ToJPG
             }
 
             // This example only supports one signature for
-            // the entire XML document.  Throw an exception 
+            // the entire XML document.  Throw an exception
             // if more than one signature was found.
             if (nodeList.Count >= 2)
             {
                 throw new CryptographicException("Verification failed: More that one signature was found for the document.");
             }
 
-            // Load the first <signature> node.  
+            // Load the first <signature> node.
             signedXml.LoadXml((XmlElement)nodeList[0]);
 
             // Check the signature and return the result.
             return signedXml.CheckSignature(key);
         }
 
-        public int compareVersion(string compareVersion) {
+        public int CompareVersion(string compareVersion)
+        {
             //Get the version of this build
             string strCurrent = GetBuildInfo(false);
 
@@ -420,53 +419,55 @@ namespace CR2ToJPG
             return intResult;
         }
 
-        public void loadProfile(bool silent)
+        public void LoadProfile(bool silent)
         {
             try
             {
-                if (!Environment.GetCommandLineArgs().Contains("--disable-load")) {
+                if (!Environment.GetCommandLineArgs().Contains("--disable-load"))
+                {
                     OpenFileDialog ofd = new OpenFileDialog();
                     ofd.Filter = "XML Profile|*.prof";
 
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
 
-                        XMLProfile subReq = XMLProfile.fromFile(ofd.FileName);
+                        XmlProfile subReq = XmlProfile.FromFile(ofd.FileName);
 
-                        if (!Environment.GetCommandLineArgs().Contains("--nvc")) {
-                            if ((subReq.AppInfo.AppVersion != "") && (subReq.AppInfo.AppVersion != null)) {
+                        if (!Environment.GetCommandLineArgs().Contains("--nvc"))
+                        {
+                            if ((subReq.AppInfo.AppVersion != string.Empty) && (subReq.AppInfo.AppVersion != null))
+                            {
                                 //Make sure the XML Profile is compatible
-                                int compareResult = compareVersion(subReq.AppInfo.AppVersion);
+                                int compareResult = CompareVersion(subReq.AppInfo.AppVersion);
 
                                 //MessageBox.Show(compareResult.ToString());
 
                                 if (compareResult > 0)
                                 {
-                                    MessageBox.Show("This profile was saved with an earlier version (" + subReq.AppInfo.AppVersion + ").\nIt may not be compatible with this version of CR2 To JPG. You can still use it, but we can't guarantee its compatibility.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show("This profile was saved with an earlier version (" + subReq.AppInfo.AppVersion + ").\nIt may not be compatible with this version of CR2 To JPG. You can still use it, but we can't guarantee its compatibility.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 }
                                 else if (compareResult < 0)
                                 {
-                                    MessageBox.Show("This profile was saved with a later version (" + subReq.AppInfo.AppVersion + ").\nIt may not be compatible with this version of CR2 To JPG. You can still use it, but we can't guarantee its compatibility.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show("This profile was saved with a later version (" + subReq.AppInfo.AppVersion + ").\nIt may not be compatible with this version of CR2 To JPG. You can still use it, but we can't guarantee its compatibility.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 }
                             }
                             else
                             {
-                                MessageBox.Show("We couldn't be certain what version this profile was saved with. You can still use it, but we can't guarantee its compatibility.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("We couldn't be certain what version this profile was saved with. You can still use it, but we can't guarantee its compatibility.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             }
                         }
 
-
                         if (subReq.Options.Quality <= 100)
                         {
-                            if ((Directory.Exists(subReq.Locations.CR2Folder)) && (Directory.Exists(subReq.Locations.JPGFolder)))
+                            if ((Directory.Exists(subReq.Locations.Cr2Folder)) && (Directory.Exists(subReq.Locations.JpgFolder)))
                             {
-                                settings.Quality = subReq.Options.Quality;
-                                settings.Subfolders = subReq.Options.Subfolders;
-                                txtInputDirectory.Text = subReq.Locations.CR2Folder;
-                                txtOutputDirectory.Text = subReq.Locations.JPGFolder;
+                                Settings.Quality = subReq.Options.Quality;
+                                Settings.Subfolders = subReq.Options.Subfolders;
+                                txtInputDirectory.Text = subReq.Locations.Cr2Folder;
+                                txtOutputDirectory.Text = subReq.Locations.JpgFolder;
                                 if (subReq.Watermark != null)
                                 {
-                                    wmContext = subReq.Watermark;
+                                    WmContext = subReq.Watermark;
                                 }
 
                                 if (!silent)
@@ -477,13 +478,11 @@ namespace CR2ToJPG
                             else
                             {
                                 MessageBox.Show("One or more profile-defined directories do not exist", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
                             }
                         }
                         else
                         {
                             MessageBox.Show("Quality level in profile exceeds defined maximum", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
                         }
                     }
                 }
@@ -494,7 +493,6 @@ namespace CR2ToJPG
                 {
                     MessageBox.Show(ex.ToString(), "Error in loading XML Profile", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                return;
             }
         }
 
@@ -502,27 +500,26 @@ namespace CR2ToJPG
         {
             MessageBox.Show("CR2 To JPG Converter\n\nBased on technology developed by William Wood (Copyright (c) 2014)\nhttps://github.com/wmwood/CR2ToJPG\n\nDeveloped by BRH Media (Baeleigh Harris)\n\nBuild: " + GetBuildInfo(false) +
                 "\nRenderer Build: " + StructureGeneric.GetBuildInfo(false) +
-                "\nStructure Build: " + renderer.ImageRenderer.GetBuildInfo(false),"About",MessageBoxButtons.OK,MessageBoxIcon.Information);
-
+                "\nStructure Build: " + ImageRenderer.GetBuildInfo(false), "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
         private void itmProfileSave_Click(object sender, EventArgs e)
         {
-            saveProfile(false);
+            SaveProfile(false);
         }
 
         private void itmProfileLoad_Click(object sender, EventArgs e)
         {
-            loadProfile(false);
+            LoadProfile(false);
         }
 
         private void itmCheckUpdates_Click(object sender, EventArgs e)
         {
-            doCheckUpdate();
+            DoCheckUpdate();
         }
 
-        void doCheckUpdate()
+        private void DoCheckUpdate()
         {
             if (!Environment.GetCommandLineArgs().Contains("--disable-update"))
             {
@@ -540,53 +537,28 @@ namespace CR2ToJPG
 
         private void watermarkingWizardToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            doWatermarkWizard();
+            DoWatermarkWizard();
         }
 
-        public void doWatermarkWizard()
+        public void DoWatermarkWizard()
         {
             try
             {
                 if (!Environment.GetCommandLineArgs().Contains("--disable-wm"))
                 {
-                    frmWatermark frm = new frmWatermark();
+                    FrmWatermark frm = new FrmWatermark();
                     frm.ShowDialog();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                return;
-            }
-        }
-    }
-
-    public class AbortableBackgroundWorker : System.ComponentModel.BackgroundWorker
-    {
-        private System.Threading.Thread workerThread;
-
-        protected override void OnDoWork(System.ComponentModel.DoWorkEventArgs e)
-        {
-            workerThread = System.Threading.Thread.CurrentThread;
-
-            try
-            {
-                base.OnDoWork(e);
-            }
-            catch (System.Threading.ThreadAbortException __unusedThreadAbortException1__)
-            {
-                e.Cancel = true;
-                System.Threading.Thread.ResetAbort();
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        public void Abort()
+        private void itmAboutWebsite_Click(object sender, EventArgs e)
         {
-            if (workerThread != null)
-            {
-                workerThread.Abort();
-                workerThread = null;
-            }
+            Process.Start("https://brharris.me");
         }
     }
 }

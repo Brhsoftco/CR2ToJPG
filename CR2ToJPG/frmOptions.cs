@@ -1,46 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using structure;
+using structure.Enums;
+using System;
 using System.Windows.Forms;
-using structure;
 
 namespace CR2ToJPG
 {
-    public partial class frmOptions : Form
+    public partial class FrmOptions : Form
     {
-        public bool silence = false;
+        public bool Silence;
 
-        public frmOptions()
+        public FrmOptions()
         {
             InitializeComponent();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            AppOptions options = new AppOptions()
+            AppOptions options = new AppOptions
             {
                 Quality = (int)numQualityLevel.Value,
                 Subfolders = chkSubfolders.Checked,
-                Duplicates = chkDuplicates.Checked
+                Duplicates = chkDuplicates.Checked,
+                ProcessJpeg = chkProcessJPEG.Checked
             };
 
-            frmMain.settings = options;
-            this.Close();
+            if (radMagickNet.Checked)
+                options.ImageProcessor = ImageProcType.MagickNet;
+            else if (radNative.Checked)
+                options.ImageProcessor = ImageProcType.Native;
+
+            FrmMain.Settings = options;
+            Close();
         }
 
         private void frmOptions_Load(object sender, EventArgs e)
         {
-            silence = true;
-            AppOptions options = frmMain.settings;
+            Silence = true;
+            AppOptions options = FrmMain.Settings;
             chkSubfolders.Checked = options.Subfolders;
             numQualityLevel.Value = options.Quality;
             chkDuplicates.Checked = options.Duplicates;
-            silence = false;
+            chkProcessJPEG.Checked = options.ProcessJpeg;
+
+            if (options.ImageProcessor == ImageProcType.MagickNet)
+                radMagickNet.Checked = true;
+            else if (options.ImageProcessor == ImageProcType.Native)
+                radNative.Checked = true;
+
+            Silence = false;
         }
     }
 }

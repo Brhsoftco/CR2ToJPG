@@ -1,72 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using structure;
+﻿using CR2ToJPG.Properties;
 using renderer;
-using ImageMagick;
+using structure;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace CR2ToJPG
 {
-    public partial class frmWatermark : Form
+    public partial class FrmWatermark : Form
     {
-        public frmWatermark()
+        public FrmWatermark()
         {
             InitializeComponent();
         }
 
-        public WatermarkContext globalWmContext = frmMain.wmContext;
+        public WatermarkContext GlobalWmContext = FrmMain.WmContext;
 
-        public bool imageSelected = false;
+        public bool ImageSelected;
 
-        public bool radDoNothing = false;
+        public bool RadDoNothing;
 
-        public renderer.ImageRenderer ImageRenderer = new renderer.ImageRenderer();
+        public ImageRenderer ImageRenderer = new ImageRenderer();
 
-        private void renderPreview()
+        private void RenderPreview()
         {
 
-            Bitmap basePreview = CR2ToJPG.Properties.Resources.flower_preview;
-            ImageRenderer.wmContext = globalWmContext;
-            
-            if (globalWmContext.BetaWatermarkType == WatermarkType.None)
+            Bitmap basePreview = Resources.flower_preview;
+            ImageRenderer.WmContext = GlobalWmContext;
+
+            ShowRendering(); ;
+
+            if (GlobalWmContext.BetaWatermarkType == WatermarkType.None)
             {
-                setPreviewImage(basePreview);
+                SetPreviewImage(basePreview);
             }
-            else if (globalWmContext.BetaWatermarkType == WatermarkType.Text)
+            else if (GlobalWmContext.BetaWatermarkType == WatermarkType.Text)
             {
-                if (txtImageText.Text != "")
+                if (txtImageText.Text != string.Empty)
                 {
-                    Bitmap result = ImageRenderer.renderTextWatermark(txtImageText.Text, basePreview);
-                    setPreviewImage(result);
+                    Bitmap result = ImageRenderer.RenderTextWatermark(txtImageText.Text, basePreview);
+                    SetPreviewImage(result);
                 }
                 else
                 {
-                    setPreviewImage(basePreview);
+                    SetPreviewImage(basePreview);
                 }
             }
-            else if (globalWmContext.BetaWatermarkType == WatermarkType.Image)
+            else if (GlobalWmContext.BetaWatermarkType == WatermarkType.Image)
             {
-                if (imageSelected)
+                if (ImageSelected)
                 {
                     Bitmap watermark = (Bitmap)Bitmap.FromFile(txtImageURI.Text);
-                    Bitmap result = ImageRenderer.renderImageWatermark(watermark, basePreview);
-                    setPreviewImage(result);
+                    Bitmap result = ImageRenderer.RenderImageWatermark(watermark, basePreview);
+                    SetPreviewImage(result);
                 }
             }
+
+            HideRendering();
         }
 
-        private void setPreviewImage(Bitmap image)
+        private void SetPreviewImage(Bitmap image)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke((MethodInvoker)delegate () {
+                BeginInvoke((MethodInvoker)delegate
+                {
                     picPreview.BackgroundImage = image;
                 });
             }
@@ -76,7 +76,7 @@ namespace CR2ToJPG
             }
         }
 
-        private void positionRenderingLabel()
+        private void PositionRenderingLabel()
         {
             Point pic = picPreview.Location;
             Point lbl = lblRendering.Location;
@@ -92,43 +92,44 @@ namespace CR2ToJPG
             lblRendering.Location = lblNew;
         }
 
-        private void revertWatermarkImagePreview()
+        private void RevertWatermarkImagePreview()
         {
             picPreview.BackgroundImage = null;
             picPreview.BorderStyle = BorderStyle.FixedSingle;
         }
 
-        private void setTypeImage()
+        private void SetTypeImage()
         {
             tabImage.Enabled = true;
             tabText.Enabled = false;
-            txtImageText.Text = "DefaultWatermark";
-            btnFontSelector.Text = "DefaultWatermark";
-            globalWmContext.BetaWatermarkType = WatermarkType.Image;
+            txtImageText.Text = @"DefaultWatermark";
+            btnFontSelector.Text = @"DefaultWatermark";
+            GlobalWmContext.BetaWatermarkType = WatermarkType.Image;
         }
 
-        private void setTypeText()
+        private void SetTypeText()
         {
             tabImage.Enabled = false;
             tabText.Enabled = true;
-            globalWmContext.BetaWatermarkType = WatermarkType.Text;
+            GlobalWmContext.BetaWatermarkType = WatermarkType.Text;
         }
 
-        private void setTypeNone()
+        private void SetTypeNone()
         {
             tabImage.Enabled = false;
             tabText.Enabled = false;
-            txtImageText.Text = "DefaultWatermark";
-            btnFontSelector.Text = "DefaultWatermark";
+            txtImageText.Text = @"DefaultWatermark";
+            btnFontSelector.Text = @"DefaultWatermark";
             ofdWatermarkImage.FileName = "";
-            globalWmContext.BetaWatermarkType = WatermarkType.None;
+            GlobalWmContext.BetaWatermarkType = WatermarkType.None;
         }
 
-        private void showRendering()
+        private void ShowRendering()
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke((MethodInvoker)delegate() {
+                BeginInvoke((MethodInvoker)delegate
+                {
                     picPreview.Visible = false;
                     lblRendering.Visible = true;
                 });
@@ -140,11 +141,12 @@ namespace CR2ToJPG
             }
         }
 
-        private void hideRendering()
+        private void HideRendering()
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke((MethodInvoker)delegate () {
+                BeginInvoke((MethodInvoker)delegate
+                {
                     picPreview.Visible = true;
                     lblRendering.Visible = false;
                 });
@@ -158,19 +160,19 @@ namespace CR2ToJPG
 
         private void frmWatermark_Load(object sender, EventArgs e)
         {
-            WatermarkContext wmContext = globalWmContext;
+            WatermarkContext wmContext = GlobalWmContext;
 
-            radDoNothing = true;
+            RadDoNothing = true;
             tabText.Enabled = false;
             tabImage.Enabled = false;
-            btnFontSelector.ForeColor = wmContext.BetaWatermarkFont.getColor();
-            btnFontSelector.Font = wmContext.BetaWatermarkFont.getFont(true);
+            btnFontSelector.ForeColor = wmContext.BetaWatermarkFont.GetColor();
+            btnFontSelector.Font = wmContext.BetaWatermarkFont.GetFont(true);
 
-            positionRenderingLabel();
+            PositionRenderingLabel();
 
-            numWatermarkScale.Value = (decimal)globalWmContext.BetaWatermarkScale;
-            numWatermarkOffsetX.Value = (decimal)globalWmContext.BetaWatermarkOffset.X;
-            numWatermarkOffsetY.Value = (decimal)globalWmContext.BetaWatermarkOffset.Y;
+            numWatermarkScale.Value = (decimal)GlobalWmContext.BetaWatermarkScale;
+            numWatermarkOffsetX.Value = GlobalWmContext.BetaWatermarkOffset.X;
+            numWatermarkOffsetY.Value = GlobalWmContext.BetaWatermarkOffset.Y;
 
             if (wmContext.BetaWatermarkType == WatermarkType.None)
             {
@@ -178,49 +180,43 @@ namespace CR2ToJPG
             }
             else if (wmContext.BetaWatermarkType == WatermarkType.Text)
             {
-                setTypeText();
+                SetTypeText();
                 txtImageText.Text = wmContext.BetaWatermarkInfo.WatermarkText;
                 btnFontSelector.Text = wmContext.BetaWatermarkInfo.WatermarkText;
                 radWatermarkText.Checked = true;
             }
             else if (wmContext.BetaWatermarkType == WatermarkType.Image)
             {
-                setTypeImage();
+                SetTypeImage();
                 radWatermarkImage.Checked = true;
-                if (System.IO.File.Exists(wmContext.BetaWatermarkInfo.WatermarkPath))
+                if (File.Exists(wmContext.BetaWatermarkInfo.WatermarkPath))
                 {
-                    ImageInfo img = ImageInfo.fromFile(wmContext.BetaWatermarkInfo.WatermarkPath);
+                    ImageInfo img = ImageInfo.FromFile(wmContext.BetaWatermarkInfo.WatermarkPath);
                     txtImageURI.Text = wmContext.BetaWatermarkInfo.WatermarkPath;
-                    imageSelected = true;
-                    lblWidthValue.Text = img.width + "px";
-                    lblHeightValue.Text = img.height + "px";
-                    lblFileSizeValue.Text = img.byteString();
+                    ImageSelected = true;
+                    lblWidthValue.Text = img.Width + "px";
+                    lblHeightValue.Text = img.Height + "px";
+                    lblFileSizeValue.Text = img.ByteString();
 
-                    loadWatermarkImagePreview(wmContext.BetaWatermarkInfo.WatermarkPath);
-                    revertWatermarkImagePreview();
-                    renderPreview();
+                    LoadWatermarkImagePreview(wmContext.BetaWatermarkInfo.WatermarkPath);
+                    RevertWatermarkImagePreview();
+                    RenderPreview();
                 }
                 else
                 {
-                    revertWatermarkImagePreview();
+                    RevertWatermarkImagePreview();
                 }
             }
-            radDoNothing = false;
-        }
-
-        private void loadWatermarkImagePreviewBase64(string b64)
-        {
-            
-            picWatermark.BorderStyle = BorderStyle.None;
-            picWatermark.BackgroundImage = ImageRenderer.renderBmpFromBase64(b64);
+            RadDoNothing = false;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            globalWmContext.BetaWatermarkInfo = new WatermarkInformation() { WatermarkText = txtImageText.Text, WatermarkPath = txtImageURI.Text };
-            frmMain.wmContext = globalWmContext;
+            GlobalWmContext.BetaWatermarkInfo = new WatermarkInformation
+            { WatermarkText = txtImageText.Text, WatermarkPath = txtImageURI.Text };
+            FrmMain.WmContext = GlobalWmContext;
 
-            this.Close();
+            Close();
         }
 
         private void gbWatermarkInfo_Enter(object sender, EventArgs e)
@@ -230,18 +226,18 @@ namespace CR2ToJPG
 
         private void radWatermarkNone_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                setTypeNone();
+                SetTypeNone();
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
-        private void loadWatermarkImagePreview(string fileName)
+        private void LoadWatermarkImagePreview(string fileName)
         {
             Bitmap prev = (Bitmap)Bitmap.FromFile(fileName);
             picWatermark.BorderStyle = BorderStyle.None;
@@ -253,117 +249,115 @@ namespace CR2ToJPG
             if (ofdWatermarkImage.ShowDialog() == DialogResult.OK)
             {
                 txtImageURI.Text = ofdWatermarkImage.FileName;
-                loadWatermarkImagePreview(ofdWatermarkImage.FileName);
+                LoadWatermarkImagePreview(ofdWatermarkImage.FileName);
 
-                ImageInfo img = ImageInfo.fromFile(ofdWatermarkImage.FileName);
+                ImageInfo img = ImageInfo.FromFile(ofdWatermarkImage.FileName);
 
-                lblWidthValue.Text = img.width + "px";
-                lblHeightValue.Text = img.height + "px";
-                lblFileSizeValue.Text = img.byteString();
+                lblWidthValue.Text = img.Width + "px";
+                lblHeightValue.Text = img.Height + "px";
+                lblFileSizeValue.Text = img.ByteString();
 
                 //globalWmContext.BetaWatermarkImageBase64 = watermarkImageToBase64((Bitmap)Bitmap.FromFile(ofdWatermarkImage.FileName));
-                imageSelected = true;
-                renderPreview();
+                ImageSelected = true;
+                RenderPreview();
             }
         }
 
         private void radWatermarkImage_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                setTypeImage();
-                renderPreview();
+                SetTypeImage();
+                RenderPreview();
             }
         }
 
         private void radWatermarkText_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                setTypeText();
-                renderPreview();
+                SetTypeText();
+                RenderPreview();
             }
         }
 
         private void radBottomRight_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.BottomRight;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.BottomRight;
+                RenderPreview();
             }
         }
 
         private void radTopCenter_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.TopCenter;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.TopCenter;
+                RenderPreview();
             }
         }
 
         private void radTopRight_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.TopRight;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.TopRight;
+                RenderPreview();
             }
         }
 
         private void radBottomLeft_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.BottomLeft;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.BottomLeft;
+                RenderPreview();
             }
         }
 
         private void radBottomCenter_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.BottomCenter;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.BottomCenter;
+                RenderPreview();
             }
         }
 
         private void radTopLeft_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.TopLeft;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.TopLeft;
+                RenderPreview();
             }
         }
 
         private void bwRenderer_DoWork(object sender, DoWorkEventArgs e)
         {
-            showRendering();
-            renderPreview();
-            hideRendering();
+            ShowRendering();
+            RenderPreview();
+            HideRendering();
         }
 
         private void numImageOffsetX_ValueChanged(object sender, EventArgs e)
         {
-            PointD offset = new PointD((double)numWatermarkOffsetX.Value,(double)numWatermarkOffsetY.Value);
-            globalWmContext.BetaWatermarkOffset = new WatermarkOffset() { X = (int)offset.X,Y= (int)offset.Y };
-            renderPreview();
+            GlobalWmContext.BetaWatermarkOffset.X = (int)numWatermarkOffsetX.Value;
+            RenderPreview();
         }
 
         private void numImageOffsetY_ValueChanged(object sender, EventArgs e)
         {
-            PointD offset = new PointD((double)numWatermarkOffsetX.Value, (double)numWatermarkOffsetY.Value);
-            globalWmContext.BetaWatermarkOffset = new WatermarkOffset() { X = (int)offset.X, Y = (int)offset.Y };
-            renderPreview();
+            GlobalWmContext.BetaWatermarkOffset.Y = (int)numWatermarkOffsetY.Value;
+            RenderPreview();
         }
 
         private void numWatermarkScale_ValueChanged(object sender, EventArgs e)
         {
-            globalWmContext.BetaWatermarkScale = (double)numWatermarkScale.Value;
-            renderPreview();
+            GlobalWmContext.BetaWatermarkScale = (double)numWatermarkScale.Value;
+            RenderPreview();
         }
 
         private void txtImageText_TextChanged(object sender, EventArgs e)
@@ -376,7 +370,7 @@ namespace CR2ToJPG
         private void tmrTextRender_Tick(object sender, EventArgs e)
         {
             tmrTextRender.Stop();
-            renderPreview();
+            RenderPreview();
         }
 
         private void btnFontSelector_Click(object sender, EventArgs e)
@@ -385,49 +379,63 @@ namespace CR2ToJPG
             {
 
                 WatermarkFont font = new WatermarkFont();
-                font.argbFontColor = WatermarkFont.argbColorToString(dlgWatermarkFont.Color);
-                font.fontFamily = dlgWatermarkFont.Font.FontFamily.Name;
-                font.pointSize = dlgWatermarkFont.Font.Size;
-                font.fontStyle = dlgWatermarkFont.Font.Style;
+                font.ArgbFontColor = WatermarkFont.ArgbColorToString(dlgWatermarkFont.Color);
+                font.FontFamily = dlgWatermarkFont.Font.FontFamily.Name;
+                font.PointSize = dlgWatermarkFont.Font.Size;
+                font.FontStyle = dlgWatermarkFont.Font.Style;
 
-                globalWmContext.BetaWatermarkFont = font;
-                btnFontSelector.Font = globalWmContext.BetaWatermarkFont.getFont(true);
-                btnFontSelector.ForeColor = globalWmContext.BetaWatermarkFont.getColor();
-                renderPreview();
+                GlobalWmContext.BetaWatermarkFont = font;
+                btnFontSelector.Font = GlobalWmContext.BetaWatermarkFont.GetFont(true);
+                btnFontSelector.ForeColor = GlobalWmContext.BetaWatermarkFont.GetColor();
+                RenderPreview();
             }
         }
 
         private void radCenter_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.Center;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.Center;
+                RenderPreview();
             }
         }
 
         private void radLeft_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.Left;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.Left;
+                RenderPreview();
             }
         }
 
         private void radRight_CheckedChanged(object sender, EventArgs e)
         {
-            if (!radDoNothing)
+            if (!RadDoNothing)
             {
-                globalWmContext.BetaWatermarkLocation = WatermarkLocation.Right;
-                renderPreview();
+                GlobalWmContext.BetaWatermarkLocation = WatermarkLocation.Right;
+                RenderPreview();
             }
         }
 
         private void numWatermarkTransparency_ValueChanged(object sender, EventArgs e)
         {
-            globalWmContext.BetaWatermarkTransparency = (double)numWatermarkTransparency.Value / 4;
-            renderPreview();
+            GlobalWmContext.BetaWatermarkTransparency = (double)numWatermarkTransparency.Value;
+            RenderPreview();
+        }
+
+        private void picPreview_DoubleClick(object sender, EventArgs e)
+        {
+            using (FrmFullPreview frm = new FrmFullPreview())
+            {
+                frm.Preview = (Bitmap)picPreview.BackgroundImage;
+                frm.ShowDialog();
+            }
+        }
+
+        private void picPreview_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

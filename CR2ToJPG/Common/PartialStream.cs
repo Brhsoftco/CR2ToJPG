@@ -1,156 +1,156 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Remoting;
 
-namespace CR2ToJPG
+namespace CR2ToJPG.Common
 {
     internal class PartialStream : Stream
     {
-        private FileStream m_f;
+        private FileStream _mF;
 
-        private int m_length;
+        private int _mLength;
 
-        private uint m_start;
+        private uint _mStart;
 
-        internal PartialStream(FileStream p_f, uint p_start, int p_length)
+        internal PartialStream(FileStream pF, uint pStart, int pLength)
         {
-            m_f = p_f;
-            m_start = p_start;
-            m_length = p_length;
+            _mF = pF;
+            _mStart = pStart;
+            _mLength = pLength;
 
-            m_f.Seek(p_start, SeekOrigin.Begin);
+            _mF.Seek(pStart, SeekOrigin.Begin);
             GC.Collect();
         }
 
         public override bool CanRead
         {
-            get { return m_f.CanRead; }
+            get { return _mF.CanRead; }
         }
 
         public override bool CanSeek
         {
-            get { return m_f.CanSeek; }
+            get { return _mF.CanSeek; }
         }
 
         public override bool CanTimeout
         {
-            get { return m_f.CanTimeout; }
+            get { return _mF.CanTimeout; }
         }
 
         public override bool CanWrite
         {
-            get { return m_f.CanWrite; }
+            get { return _mF.CanWrite; }
         }
 
         public override long Length
         {
-            get { return m_length; }
+            get { return _mLength; }
         }
 
         public override long Position
         {
-            get { return m_f.Position - m_start; }
-            set { m_f.Position = value + m_start; }
+            get { return _mF.Position - _mStart; }
+            set { _mF.Position = value + _mStart; }
         }
 
         public override int ReadTimeout
         {
-            get { return m_f.ReadTimeout; }
-            set { m_f.ReadTimeout = value; }
+            get { return _mF.ReadTimeout; }
+            set { _mF.ReadTimeout = value; }
         }
 
         public override int WriteTimeout
         {
-            get { return m_f.WriteTimeout; }
-            set { m_f.WriteTimeout = value; }
+            get { return _mF.WriteTimeout; }
+            set { _mF.WriteTimeout = value; }
         }
 
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
-            return m_f.BeginRead(buffer, offset, count, callback, state);
+            return _mF.BeginRead(buffer, offset, count, callback, state);
         }
 
         public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
-            return m_f.BeginWrite(buffer, offset, count, callback, state);
+            return _mF.BeginWrite(buffer, offset, count, callback, state);
         }
 
         public override void Close()
         {
-            m_f.Close();
+            _mF.Close();
         }
 
-        public override System.Runtime.Remoting.ObjRef CreateObjRef(Type requestedType)
+        public override ObjRef CreateObjRef(Type requestedType)
         {
-            return m_f.CreateObjRef(requestedType);
+            return _mF.CreateObjRef(requestedType);
         }
 
         public override int EndRead(IAsyncResult asyncResult)
         {
-            return m_f.EndRead(asyncResult);
+            return _mF.EndRead(asyncResult);
         }
 
         public override void EndWrite(IAsyncResult asyncResult)
         {
-            m_f.EndWrite(asyncResult);
+            _mF.EndWrite(asyncResult);
         }
 
         public override bool Equals(object obj)
         {
-            return m_f.Equals(obj);
+            return _mF.Equals(obj);
         }
 
         public override void Flush()
         {
-            m_f.Flush();
+            _mF.Flush();
         }
 
         public override int GetHashCode()
         {
-            return m_f.GetHashCode();
+            return _mF.GetHashCode();
         }
 
         public override object InitializeLifetimeService()
         {
-            return m_f.InitializeLifetimeService();
+            return _mF.InitializeLifetimeService();
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
             long maxRead = Length - Position;
-            return m_f.Read(buffer, offset, (count <= maxRead) ? count : (int)maxRead);
+            return _mF.Read(buffer, offset, (count <= maxRead) ? count : (int)maxRead);
         }
 
         public override int ReadByte()
         {
             if (Position < Length)
-                return m_f.ReadByte();
-            else
-                return 0;
+                return _mF.ReadByte();
+            return 0;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            return m_f.Seek(offset + m_start, origin);
+            return _mF.Seek(offset + _mStart, origin);
         }
 
         public override void SetLength(long value)
         {
-            m_f.SetLength(value);
+            _mF.SetLength(value);
         }
 
         public override string ToString()
         {
-            return m_f.ToString();
+            return _mF.ToString();
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            m_f.Write(buffer, offset, count);
+            _mF.Write(buffer, offset, count);
         }
 
         public override void WriteByte(byte value)
         {
-            m_f.WriteByte(value);
+            _mF.WriteByte(value);
         }
 
         protected override void Dispose(bool disposing)

@@ -1,11 +1,14 @@
-﻿namespace CR2ToJPG
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace CR2ToJPG
 {
-    partial class frmWatermark
+    partial class FrmWatermark
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -59,6 +62,7 @@
             this.btnBrowseImage = new System.Windows.Forms.Button();
             this.txtImageURI = new System.Windows.Forms.TextBox();
             this.tabGeneric = new System.Windows.Forms.TabPage();
+            this.numWatermarkTransparency = new System.Windows.Forms.NumericUpDown();
             this.lblWatermarkTransparency = new System.Windows.Forms.Label();
             this.lblWatermarkOffsetY = new System.Windows.Forms.Label();
             this.lblWatermarkOffsetX = new System.Windows.Forms.Label();
@@ -83,7 +87,6 @@
             this.dlgWatermarkFont = new System.Windows.Forms.FontDialog();
             this.tmrTextRender = new System.Windows.Forms.Timer(this.components);
             this.bwRenderer = new CR2ToJPG.AbortableBackgroundWorker();
-            this.numWatermarkTransparency = new System.Windows.Forms.NumericUpDown();
             this.gbPreview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
             this.gbWatermarkType.SuspendLayout();
@@ -96,12 +99,12 @@
             this.pnlImageURL.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picWatermark)).BeginInit();
             this.tabGeneric.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numWatermarkTransparency)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWatermarkOffsetY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWatermarkOffsetX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWatermarkScale)).BeginInit();
             this.gbWatermarkLocation.SuspendLayout();
             this.pnlWatermarkLocation.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numWatermarkTransparency)).BeginInit();
             this.SuspendLayout();
             // 
             // gbPreview
@@ -135,6 +138,8 @@
             this.picPreview.Size = new System.Drawing.Size(320, 192);
             this.picPreview.TabIndex = 0;
             this.picPreview.TabStop = false;
+            this.picPreview.Click += new System.EventHandler(this.picPreview_Click);
+            this.picPreview.DoubleClick += new System.EventHandler(this.picPreview_DoubleClick);
             // 
             // gbWatermarkType
             // 
@@ -421,6 +426,25 @@
             this.tabGeneric.Text = "Generic";
             this.tabGeneric.UseVisualStyleBackColor = true;
             // 
+            // numWatermarkTransparency
+            // 
+            this.numWatermarkTransparency.DecimalPlaces = 2;
+            this.numWatermarkTransparency.Location = new System.Drawing.Point(5, 103);
+            this.numWatermarkTransparency.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numWatermarkTransparency.Name = "numWatermarkTransparency";
+            this.numWatermarkTransparency.Size = new System.Drawing.Size(304, 20);
+            this.numWatermarkTransparency.TabIndex = 17;
+            this.numWatermarkTransparency.Value = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            131072});
+            this.numWatermarkTransparency.ValueChanged += new System.EventHandler(this.numWatermarkTransparency_ValueChanged);
+            // 
             // lblWatermarkTransparency
             // 
             this.lblWatermarkTransparency.AutoSize = true;
@@ -670,20 +694,7 @@
             // 
             this.bwRenderer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwRenderer_DoWork);
             // 
-            // numWatermarkTransparency
-            // 
-            this.numWatermarkTransparency.Location = new System.Drawing.Point(5, 103);
-            this.numWatermarkTransparency.Name = "numWatermarkTransparency";
-            this.numWatermarkTransparency.Size = new System.Drawing.Size(304, 20);
-            this.numWatermarkTransparency.TabIndex = 17;
-            this.numWatermarkTransparency.Value = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.numWatermarkTransparency.ValueChanged += new System.EventHandler(this.numWatermarkTransparency_ValueChanged);
-            // 
-            // frmWatermark
+            // FrmWatermark
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -697,7 +708,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmWatermark";
+            this.Name = "FrmWatermark";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -721,73 +732,73 @@
             ((System.ComponentModel.ISupportInitialize)(this.picWatermark)).EndInit();
             this.tabGeneric.ResumeLayout(false);
             this.tabGeneric.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numWatermarkTransparency)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWatermarkOffsetY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWatermarkOffsetX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWatermarkScale)).EndInit();
             this.gbWatermarkLocation.ResumeLayout(false);
             this.pnlWatermarkLocation.ResumeLayout(false);
             this.pnlWatermarkLocation.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numWatermarkTransparency)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox gbPreview;
-        private System.Windows.Forms.GroupBox gbWatermarkType;
-        private System.Windows.Forms.RadioButton radWatermarkImage;
-        private System.Windows.Forms.RadioButton radWatermarkText;
-        private System.Windows.Forms.RadioButton radWatermarkNone;
-        private System.Windows.Forms.Panel pnlWatermarkType;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.PictureBox picPreview;
-        private System.Windows.Forms.GroupBox gbWatermarkInfo;
-        private System.Windows.Forms.GroupBox gbWatermarkLocation;
-        private System.Windows.Forms.Panel pnlWatermarkLocation;
-        private System.Windows.Forms.RadioButton radBottomRight;
-        private System.Windows.Forms.RadioButton radTopRight;
-        private System.Windows.Forms.RadioButton radBottomLeft;
-        private System.Windows.Forms.RadioButton radTopLeft;
-        private System.Windows.Forms.RadioButton radTopCenter;
-        private System.Windows.Forms.RadioButton radBottomCenter;
-        private System.Windows.Forms.Panel pnlImageURL;
-        private System.Windows.Forms.Button btnBrowseImage;
-        private System.Windows.Forms.TextBox txtImageURI;
-        private System.Windows.Forms.Panel pnlImageText;
-        private System.Windows.Forms.TextBox txtImageText;
-        private System.Windows.Forms.TabControl tabWatermarkInfo;
-        private System.Windows.Forms.TabPage tabText;
-        private System.Windows.Forms.TabPage tabImage;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.PictureBox picWatermark;
-        public System.Windows.Forms.OpenFileDialog ofdWatermarkImage;
-        private System.Windows.Forms.Label lblWatermarkText;
-        private System.Windows.Forms.Label lblRendering;
+        private GroupBox gbPreview;
+        private GroupBox gbWatermarkType;
+        private RadioButton radWatermarkImage;
+        private RadioButton radWatermarkText;
+        private RadioButton radWatermarkNone;
+        private Panel pnlWatermarkType;
+        private Button btnOK;
+        private PictureBox picPreview;
+        private GroupBox gbWatermarkInfo;
+        private GroupBox gbWatermarkLocation;
+        private Panel pnlWatermarkLocation;
+        private RadioButton radBottomRight;
+        private RadioButton radTopRight;
+        private RadioButton radBottomLeft;
+        private RadioButton radTopLeft;
+        private RadioButton radTopCenter;
+        private RadioButton radBottomCenter;
+        private Panel pnlImageURL;
+        private Button btnBrowseImage;
+        private TextBox txtImageURI;
+        private Panel pnlImageText;
+        private TextBox txtImageText;
+        private TabControl tabWatermarkInfo;
+        private TabPage tabText;
+        private TabPage tabImage;
+        private Button btnCancel;
+        private PictureBox picWatermark;
+        public OpenFileDialog ofdWatermarkImage;
+        private Label lblWatermarkText;
+        private Label lblRendering;
         private AbortableBackgroundWorker bwRenderer;
-        private System.Windows.Forms.FontDialog dlgWatermarkFont;
-        private System.Windows.Forms.Label lblFontSelector;
-        private System.Windows.Forms.Timer tmrTextRender;
-        private System.Windows.Forms.Button btnFontSelector;
-        private System.Windows.Forms.TabPage tabGeneric;
-        private System.Windows.Forms.NumericUpDown numWatermarkOffsetY;
-        private System.Windows.Forms.NumericUpDown numWatermarkOffsetX;
-        private System.Windows.Forms.Label lblWatermarkScale;
-        private System.Windows.Forms.NumericUpDown numWatermarkScale;
-        private System.Windows.Forms.Label lblInformation;
-        private System.Windows.Forms.Label lblWidth;
-        private System.Windows.Forms.Label lblHeight;
-        private System.Windows.Forms.Label lblWidthValue;
-        private System.Windows.Forms.Label lblHeightValue;
-        private System.Windows.Forms.Label lblFileSize;
-        private System.Windows.Forms.Label lblFileSizeValue;
-        private System.Windows.Forms.Label lblWatermarkOffsetX;
-        private System.Windows.Forms.Label lblWatermarkOffset;
-        private System.Windows.Forms.Label lblWatermarkOffsetY;
-        private System.Windows.Forms.RadioButton radLeft;
-        private System.Windows.Forms.RadioButton radRight;
-        private System.Windows.Forms.RadioButton radCenter;
-        private System.Windows.Forms.Label lblWatermarkTransparency;
-        private System.Windows.Forms.NumericUpDown numWatermarkTransparency;
+        private FontDialog dlgWatermarkFont;
+        private Label lblFontSelector;
+        private Timer tmrTextRender;
+        private Button btnFontSelector;
+        private TabPage tabGeneric;
+        private NumericUpDown numWatermarkOffsetY;
+        private NumericUpDown numWatermarkOffsetX;
+        private Label lblWatermarkScale;
+        private NumericUpDown numWatermarkScale;
+        private Label lblInformation;
+        private Label lblWidth;
+        private Label lblHeight;
+        private Label lblWidthValue;
+        private Label lblHeightValue;
+        private Label lblFileSize;
+        private Label lblFileSizeValue;
+        private Label lblWatermarkOffsetX;
+        private Label lblWatermarkOffset;
+        private Label lblWatermarkOffsetY;
+        private RadioButton radLeft;
+        private RadioButton radRight;
+        private RadioButton radCenter;
+        private Label lblWatermarkTransparency;
+        private NumericUpDown numWatermarkTransparency;
     }
 }
