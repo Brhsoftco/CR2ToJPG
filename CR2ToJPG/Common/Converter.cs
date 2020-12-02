@@ -1,4 +1,5 @@
 ﻿using CR2ToJPG.Properties;
+using CR2ToJPG.UI.Forms;
 using ImageMagick;
 using renderer;
 using structure;
@@ -69,7 +70,6 @@ namespace CR2ToJPG.Common
 
                     if (WmContext.BetaWatermarkType == WatermarkType.Image)
                     {
-
                         Bitmap watermark = (Bitmap)Image.FromFile(WmContext.BetaWatermarkInfo.WatermarkPath);
                         Bitmap image = ImageRenderer.RenderImageWatermark(watermark, bitmap);
                         image.Save(wmkName, JpgImageCodec, ep);
@@ -118,7 +118,6 @@ namespace CR2ToJPG.Common
             {
                 using (FileStream fi = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read, _bufferSize, FileOptions.None))
                 {
-
                     // Start address is at offset 0x62, file size at 0x7A, orientation at 0x6E
                     fi.Seek(0x62, SeekOrigin.Begin);
                     BinaryReader br = new BinaryReader(fi);
@@ -174,7 +173,6 @@ namespace CR2ToJPG.Common
 
                     if (WmContext.BetaWatermarkType == WatermarkType.Image)
                     {
-
                         Bitmap watermark = (Bitmap)Image.FromFile(WmContext.BetaWatermarkInfo.WatermarkPath);
                         Bitmap image = ImageRenderer.RenderImageWatermark(watermark, bitmap);
                         image.Save(wmkName, JpgImageCodec, ep);

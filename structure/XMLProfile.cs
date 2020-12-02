@@ -53,7 +53,6 @@ namespace structure
                     File.WriteAllText(fileName, sww.ToString());
                 }
             }
-
         }
     }
 

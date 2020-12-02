@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>file_photo.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\file_photo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoUpdater.NET, Version=1.6.0.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
@@ -59,50 +59,50 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbortableBackgroundWorker.cs">
+    <Compile Include="Common\Components\AbortableBackgroundWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Common\Converter.cs" />
     <Compile Include="Common\ConverterOptions.cs" />
-    <Compile Include="frmFullPreview.cs">
+    <Compile Include="UI\Forms\FullPreview.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmFullPreview.Designer.cs">
-      <DependentUpon>frmFullPreview.cs</DependentUpon>
+    <Compile Include="UI\Forms\FullPreview.Designer.cs">
+      <DependentUpon>FullPreview.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+    <Compile Include="UI\Forms\Home.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <Compile Include="UI\Forms\Home.Designer.cs">
+      <DependentUpon>Home.cs</DependentUpon>
     </Compile>
     <Compile Include="Common\PartialStream.cs" />
-    <Compile Include="frmOptions.cs">
+    <Compile Include="UI\Forms\Options.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmOptions.Designer.cs">
-      <DependentUpon>frmOptions.cs</DependentUpon>
+    <Compile Include="UI\Forms\Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmWatermark.cs">
+    <Compile Include="UI\Forms\WatermarkOptions.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmWatermark.Designer.cs">
-      <DependentUpon>frmWatermark.cs</DependentUpon>
+    <Compile Include="UI\Forms\WatermarkOptions.Designer.cs">
+      <DependentUpon>WatermarkOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Internal\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmFullPreview.resx">
-      <DependentUpon>frmFullPreview.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Forms\FullPreview.resx">
+      <DependentUpon>FullPreview.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Forms\Home.resx">
+      <DependentUpon>Home.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmOptions.resx">
-      <DependentUpon>frmOptions.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Forms\Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmWatermark.resx">
-      <DependentUpon>frmWatermark.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Forms\WatermarkOptions.resx">
+      <DependentUpon>WatermarkOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -129,7 +129,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="file_photo.ico" />
+    <Content Include="Resources\file_photo.ico" />
     <None Include="Resources\flower_preview.jpg" />
   </ItemGroup>
   <ItemGroup />

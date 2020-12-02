@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
+using CR2ToJPG.Common.Components;
 
-namespace CR2ToJPG
+namespace CR2ToJPG.UI.Forms
 {
     partial class FrmWatermark
     {
@@ -86,7 +87,7 @@ namespace CR2ToJPG
             this.ofdWatermarkImage = new System.Windows.Forms.OpenFileDialog();
             this.dlgWatermarkFont = new System.Windows.Forms.FontDialog();
             this.tmrTextRender = new System.Windows.Forms.Timer(this.components);
-            this.bwRenderer = new CR2ToJPG.AbortableBackgroundWorker();
+            this.bwRenderer = new AbortableBackgroundWorker();
             this.gbPreview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
             this.gbWatermarkType.SuspendLayout();
@@ -138,8 +139,7 @@ namespace CR2ToJPG
             this.picPreview.Size = new System.Drawing.Size(320, 192);
             this.picPreview.TabIndex = 0;
             this.picPreview.TabStop = false;
-            this.picPreview.Click += new System.EventHandler(this.picPreview_Click);
-            this.picPreview.DoubleClick += new System.EventHandler(this.picPreview_DoubleClick);
+            this.picPreview.DoubleClick += new System.EventHandler(this.PicPreview_DoubleClick);
             // 
             // gbWatermarkType
             // 
@@ -170,7 +170,7 @@ namespace CR2ToJPG
             this.radWatermarkText.TabIndex = 0;
             this.radWatermarkText.Text = "Text Watermark";
             this.radWatermarkText.UseVisualStyleBackColor = true;
-            this.radWatermarkText.CheckedChanged += new System.EventHandler(this.radWatermarkText_CheckedChanged);
+            this.radWatermarkText.CheckedChanged += new System.EventHandler(this.RadWatermarkText_CheckedChanged);
             // 
             // radWatermarkNone
             // 
@@ -183,7 +183,7 @@ namespace CR2ToJPG
             this.radWatermarkNone.TabStop = true;
             this.radWatermarkNone.Text = "No Watermark";
             this.radWatermarkNone.UseVisualStyleBackColor = true;
-            this.radWatermarkNone.CheckedChanged += new System.EventHandler(this.radWatermarkNone_CheckedChanged);
+            this.radWatermarkNone.CheckedChanged += new System.EventHandler(this.RadWatermarkNone_CheckedChanged);
             // 
             // radWatermarkImage
             // 
@@ -194,7 +194,7 @@ namespace CR2ToJPG
             this.radWatermarkImage.TabIndex = 1;
             this.radWatermarkImage.Text = "Image Watermark";
             this.radWatermarkImage.UseVisualStyleBackColor = true;
-            this.radWatermarkImage.CheckedChanged += new System.EventHandler(this.radWatermarkImage_CheckedChanged);
+            this.radWatermarkImage.CheckedChanged += new System.EventHandler(this.RadWatermarkImage_CheckedChanged);
             // 
             // btnOK
             // 
@@ -204,7 +204,7 @@ namespace CR2ToJPG
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "Apply Settings";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // gbWatermarkInfo
             // 
@@ -215,7 +215,6 @@ namespace CR2ToJPG
             this.gbWatermarkInfo.TabIndex = 4;
             this.gbWatermarkInfo.TabStop = false;
             this.gbWatermarkInfo.Text = "Watermark Information";
-            this.gbWatermarkInfo.Enter += new System.EventHandler(this.gbWatermarkInfo_Enter);
             // 
             // tabWatermarkInfo
             // 
@@ -249,7 +248,7 @@ namespace CR2ToJPG
             this.btnFontSelector.TabIndex = 7;
             this.btnFontSelector.Text = "DefaultWatermark";
             this.btnFontSelector.UseVisualStyleBackColor = true;
-            this.btnFontSelector.Click += new System.EventHandler(this.btnFontSelector_Click);
+            this.btnFontSelector.Click += new System.EventHandler(this.BtnFontSelector_Click);
             // 
             // lblFontSelector
             // 
@@ -285,7 +284,7 @@ namespace CR2ToJPG
             this.txtImageText.Size = new System.Drawing.Size(297, 20);
             this.txtImageText.TabIndex = 0;
             this.txtImageText.Text = "DefaultWatermark";
-            this.txtImageText.TextChanged += new System.EventHandler(this.txtImageText_TextChanged);
+            this.txtImageText.TextChanged += new System.EventHandler(this.TxtImageText_TextChanged);
             // 
             // tabImage
             // 
@@ -397,7 +396,7 @@ namespace CR2ToJPG
             this.btnBrowseImage.TabIndex = 1;
             this.btnBrowseImage.Text = "...";
             this.btnBrowseImage.UseVisualStyleBackColor = true;
-            this.btnBrowseImage.Click += new System.EventHandler(this.btnBrowseImage_Click);
+            this.btnBrowseImage.Click += new System.EventHandler(this.BtnBrowseImage_Click);
             // 
             // txtImageURI
             // 
@@ -443,7 +442,7 @@ namespace CR2ToJPG
             0,
             0,
             131072});
-            this.numWatermarkTransparency.ValueChanged += new System.EventHandler(this.numWatermarkTransparency_ValueChanged);
+            this.numWatermarkTransparency.ValueChanged += new System.EventHandler(this.NumWatermarkTransparency_ValueChanged);
             // 
             // lblWatermarkTransparency
             // 
@@ -483,7 +482,7 @@ namespace CR2ToJPG
             this.numWatermarkOffsetY.Name = "numWatermarkOffsetY";
             this.numWatermarkOffsetY.Size = new System.Drawing.Size(136, 20);
             this.numWatermarkOffsetY.TabIndex = 13;
-            this.numWatermarkOffsetY.ValueChanged += new System.EventHandler(this.numImageOffsetY_ValueChanged);
+            this.numWatermarkOffsetY.ValueChanged += new System.EventHandler(this.NumImageOffsetY_ValueChanged);
             // 
             // numWatermarkOffsetX
             // 
@@ -496,7 +495,7 @@ namespace CR2ToJPG
             this.numWatermarkOffsetX.Name = "numWatermarkOffsetX";
             this.numWatermarkOffsetX.Size = new System.Drawing.Size(136, 20);
             this.numWatermarkOffsetX.TabIndex = 12;
-            this.numWatermarkOffsetX.ValueChanged += new System.EventHandler(this.numImageOffsetX_ValueChanged);
+            this.numWatermarkOffsetX.ValueChanged += new System.EventHandler(this.NumImageOffsetX_ValueChanged);
             // 
             // lblWatermarkOffset
             // 
@@ -537,7 +536,7 @@ namespace CR2ToJPG
             0,
             0,
             0});
-            this.numWatermarkScale.ValueChanged += new System.EventHandler(this.numWatermarkScale_ValueChanged);
+            this.numWatermarkScale.ValueChanged += new System.EventHandler(this.NumWatermarkScale_ValueChanged);
             // 
             // gbWatermarkLocation
             // 
@@ -574,7 +573,7 @@ namespace CR2ToJPG
             this.radCenter.TabIndex = 8;
             this.radCenter.Text = "Center";
             this.radCenter.UseVisualStyleBackColor = true;
-            this.radCenter.CheckedChanged += new System.EventHandler(this.radCenter_CheckedChanged);
+            this.radCenter.CheckedChanged += new System.EventHandler(this.RadCenter_CheckedChanged);
             // 
             // radRight
             // 
@@ -585,7 +584,7 @@ namespace CR2ToJPG
             this.radRight.TabIndex = 7;
             this.radRight.Text = "Right";
             this.radRight.UseVisualStyleBackColor = true;
-            this.radRight.CheckedChanged += new System.EventHandler(this.radRight_CheckedChanged);
+            this.radRight.CheckedChanged += new System.EventHandler(this.RadRight_CheckedChanged);
             // 
             // radLeft
             // 
@@ -596,7 +595,7 @@ namespace CR2ToJPG
             this.radLeft.TabIndex = 6;
             this.radLeft.Text = "Left";
             this.radLeft.UseVisualStyleBackColor = true;
-            this.radLeft.CheckedChanged += new System.EventHandler(this.radLeft_CheckedChanged);
+            this.radLeft.CheckedChanged += new System.EventHandler(this.RadLeft_CheckedChanged);
             // 
             // radBottomCenter
             // 
@@ -607,7 +606,7 @@ namespace CR2ToJPG
             this.radBottomCenter.TabIndex = 5;
             this.radBottomCenter.Text = "Bottom Center";
             this.radBottomCenter.UseVisualStyleBackColor = true;
-            this.radBottomCenter.CheckedChanged += new System.EventHandler(this.radBottomCenter_CheckedChanged);
+            this.radBottomCenter.CheckedChanged += new System.EventHandler(this.RadBottomCenter_CheckedChanged);
             // 
             // radBottomRight
             // 
@@ -620,7 +619,7 @@ namespace CR2ToJPG
             this.radBottomRight.TabStop = true;
             this.radBottomRight.Text = "Bottom Right";
             this.radBottomRight.UseVisualStyleBackColor = true;
-            this.radBottomRight.CheckedChanged += new System.EventHandler(this.radBottomRight_CheckedChanged);
+            this.radBottomRight.CheckedChanged += new System.EventHandler(this.RadBottomRight_CheckedChanged);
             // 
             // radTopCenter
             // 
@@ -631,7 +630,7 @@ namespace CR2ToJPG
             this.radTopCenter.TabIndex = 4;
             this.radTopCenter.Text = "Top Center";
             this.radTopCenter.UseVisualStyleBackColor = true;
-            this.radTopCenter.CheckedChanged += new System.EventHandler(this.radTopCenter_CheckedChanged);
+            this.radTopCenter.CheckedChanged += new System.EventHandler(this.RadTopCenter_CheckedChanged);
             // 
             // radTopLeft
             // 
@@ -642,7 +641,7 @@ namespace CR2ToJPG
             this.radTopLeft.TabIndex = 3;
             this.radTopLeft.Text = "Top Left";
             this.radTopLeft.UseVisualStyleBackColor = true;
-            this.radTopLeft.CheckedChanged += new System.EventHandler(this.radTopLeft_CheckedChanged);
+            this.radTopLeft.CheckedChanged += new System.EventHandler(this.RadTopLeft_CheckedChanged);
             // 
             // radTopRight
             // 
@@ -653,7 +652,7 @@ namespace CR2ToJPG
             this.radTopRight.TabIndex = 2;
             this.radTopRight.Text = "Top Right";
             this.radTopRight.UseVisualStyleBackColor = true;
-            this.radTopRight.CheckedChanged += new System.EventHandler(this.radTopRight_CheckedChanged);
+            this.radTopRight.CheckedChanged += new System.EventHandler(this.RadTopRight_CheckedChanged);
             // 
             // radBottomLeft
             // 
@@ -664,7 +663,7 @@ namespace CR2ToJPG
             this.radBottomLeft.TabIndex = 1;
             this.radBottomLeft.Text = "Bottom Left";
             this.radBottomLeft.UseVisualStyleBackColor = true;
-            this.radBottomLeft.CheckedChanged += new System.EventHandler(this.radBottomLeft_CheckedChanged);
+            this.radBottomLeft.CheckedChanged += new System.EventHandler(this.RadBottomLeft_CheckedChanged);
             // 
             // btnCancel
             // 
@@ -674,7 +673,7 @@ namespace CR2ToJPG
             this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.button1_Click);
+            this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
             // ofdWatermarkImage
             // 
@@ -688,11 +687,11 @@ namespace CR2ToJPG
             // tmrTextRender
             // 
             this.tmrTextRender.Interval = 500;
-            this.tmrTextRender.Tick += new System.EventHandler(this.tmrTextRender_Tick);
+            this.tmrTextRender.Tick += new System.EventHandler(this.TmrTextRender_Tick);
             // 
             // bwRenderer
             // 
-            this.bwRenderer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwRenderer_DoWork);
+            this.bwRenderer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BwRenderer_DoWork);
             // 
             // FrmWatermark
             // 
@@ -713,7 +712,7 @@ namespace CR2ToJPG
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Bulk Watermark";
-            this.Load += new System.EventHandler(this.frmWatermark_Load);
+            this.Load += new System.EventHandler(this.FrmWatermark_Load);
             this.gbPreview.ResumeLayout(false);
             this.gbPreview.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();

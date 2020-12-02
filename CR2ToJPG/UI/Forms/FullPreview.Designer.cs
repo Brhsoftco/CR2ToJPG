@@ -1,6 +1,6 @@
-﻿namespace CR2ToJPG
+﻿namespace CR2ToJPG.UI.Forms
 {
-    partial class FrmFullPreview
+    partial class FullPreview
     {
         /// <summary>
         /// Required designer variable.
@@ -50,12 +50,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FrmFullPreview";
+            this.Name = "FullPreview";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Full Preview";
-            this.Load += new System.EventHandler(this.frmFullPreview_Load);
+            this.Load += new System.EventHandler(this.FullPreview_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();
             this.ResumeLayout(false);
 

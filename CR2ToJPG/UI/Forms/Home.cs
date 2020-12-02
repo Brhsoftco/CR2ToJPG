@@ -1,5 +1,6 @@
 ﻿using AutoUpdaterDotNET;
 using CR2ToJPG.Common;
+using CR2ToJPG.Common.Components;
 using renderer;
 using structure;
 using System;
@@ -14,7 +15,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace CR2ToJPG
+// ReSharper disable LocalizableElement
+
+namespace CR2ToJPG.UI.Forms
 {
     public partial class FrmMain : Form
     {
@@ -68,14 +71,12 @@ namespace CR2ToJPG
                         arrFiles = Directory.GetFiles(txtInputDirectory.Text, "*.CR2", SearchOption.AllDirectories);
                         if (Settings.ProcessJpeg)
                             arrFiles = arrFiles.Concat(Directory.GetFiles(txtInputDirectory.Text, "*.JPG")).ToArray();
-
                     }
                     else
                     {
                         arrFiles = Directory.GetFiles(txtInputDirectory.Text, "*.CR2");
                         if (Settings.ProcessJpeg)
                             arrFiles = arrFiles.Concat(Directory.GetFiles(txtInputDirectory.Text, "*.JPG")).ToArray();
-
                     }
 
                     var converterOptions = new ConverterOptions
@@ -231,37 +232,30 @@ namespace CR2ToJPG
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
         }
 
         private void lnkOptions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
         }
 
         private void pbProgress_Click(object sender, EventArgs e)
         {
-
         }
 
         private void lblJPEGFolder_Click(object sender, EventArgs e)
         {
-
         }
 
         private void txtOutputDirectory_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void txtInputDirectory_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void picMain_Click(object sender, EventArgs e)
         {
-
         }
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -280,7 +274,6 @@ namespace CR2ToJPG
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         //https://docs.microsoft.com/en-us/dotnet/standard/security/how-to-sign-xml-documents-with-digital-signatures
@@ -436,7 +429,6 @@ namespace CR2ToJPG
 
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
-
                         XmlProfile subReq = XmlProfile.FromFile(ofd.FileName);
 
                         if (!Environment.GetCommandLineArgs().Contains("--nvc"))
@@ -507,7 +499,6 @@ namespace CR2ToJPG
             MessageBox.Show("CR2 To JPG Converter\n\nBased on technology developed by William Wood (Copyright (c) 2014)\nhttps://github.com/wmwood/CR2ToJPG\n\nDeveloped by BRH Media (Baeleigh Harris)\n\nBuild: " + GetBuildInfo(false) +
                 "\nRenderer Build: " + StructureGeneric.GetBuildInfo(false) +
                 "\nStructure Build: " + ImageRenderer.GetBuildInfo(false), "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
         }
 
         private void itmProfileSave_Click(object sender, EventArgs e)
@@ -536,7 +527,6 @@ namespace CR2ToJPG
                 }
                 catch (Exception ex)
                 {
-
                 }
             }
         }

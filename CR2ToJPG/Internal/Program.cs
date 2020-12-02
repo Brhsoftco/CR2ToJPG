@@ -1,7 +1,8 @@
-﻿using System;
+﻿using CR2ToJPG.UI.Forms;
+using System;
 using System.Windows.Forms;
 
-namespace CR2ToJPG
+namespace CR2ToJPG.Internal
 {
     internal static class Program
     {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Threading;
 
-namespace CR2ToJPG
+namespace CR2ToJPG.Common.Components
 {
     public class AbortableBackgroundWorker : BackgroundWorker
     {

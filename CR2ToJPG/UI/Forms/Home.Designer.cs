@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace CR2ToJPG
+namespace CR2ToJPG.UI.Forms
 {
     partial class FrmMain
     {

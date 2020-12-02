@@ -3,7 +3,7 @@ using structure.Enums;
 using System;
 using System.Windows.Forms;
 
-namespace CR2ToJPG
+namespace CR2ToJPG.UI.Forms
 {
     public partial class FrmOptions : Form
     {
